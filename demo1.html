@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página de Turismo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
+    <link rel="stylesheet" href="/assets/css/tw.css">
+    <style>
+
+* {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+        /* Estilos para el botón de WhatsApp */
+        .whatsapp-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            background-color: #25d366;
+            color: white;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .whatsapp-button:hover {
+            background-color: #128c7e;
+        }
+
+        /* Estilos para el botón de compartir */
+        .share-button {
+            position: fixed;
+            bottom: 90px; /* Ajustar la posición vertical según sea necesario */
+            right: 20px;
+            z-index: 1000;
+            background-color: #1e3a8a; /* Color de fondo azul */
+            color: white;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            cursor: pointer; /* Cambiar el cursor al pasar por encima */
+        }
+
+        .share-button:hover {
+            background-color: #172554; /* Color de fondo más oscuro al hacer hover */
+        }
+
+        /* Estilos para el menú */
+        .menu-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            margin-left: 1rem;
+            margin-right: 1rem;
+            padding-bottom: 0.25rem; /* Espacio para la línea */
+            border-bottom: 2px solid transparent; /* Línea inicialmente transparente */
+            transition: border-bottom 0.3s ease; /* Transición suave para la línea */
+        }
+
+        .menu-link:hover {
+            border-bottom: 2px solid #f5f5f5; /* Línea blanca al hacer hover */
+        }
+
+        .menu-link.active {
+            border-bottom: 2px solid #f5f5f5; /* Línea blanca para la sección activa */
+        }
+
+        /* Estilos para la galería */
+        .gallery-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            padding: 1rem;
+        }
+
+        .gallery-item {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            overflow: hidden;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .gallery-item .view-street-view {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .gallery-item:hover .view-street-view {
+            opacity: 1;
+        }
+
+        .swiper-slide img {
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .slider-container {
+        max-width: 800px;
+        margin: 30px auto;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+    }
+    
+    .slider {
+        display: flex;
+        transition: transform 0.5s ease-in-out;
+        height: 600px;
+    }
+    
+    .slide {
+        min-width: 100%;
+        position: relative;
+    }
+    
+    .slide img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+    
+    .street-view-btn {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        background: #fff;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s;
+    }
+    
+    .street-view-btn:hover {
+        background: #f1f1f1;
+        transform: scale(1.1);
+    }
+    
+    .street-view-btn i {
+        color: #4285F4;
+        font-size: 20px;
+    }
+    
+    .slider-controls {
+        position: absolute;
+        top: 50%;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        transform: translateY(-50%);
+        padding: 0 10px;
+    }
+    
+    .control-btn {
+        background: rgba(255, 255, 255, 0.7);
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+    }
+    
+    .control-btn:hover {
+        background: rgba(255, 255, 255, 0.9);
+    }
+    
+    .slider-dots {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 8px;
+    }
+    
+    .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.5);
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .dot.active {
+        background: #fff;
+    }
+    
+    @media (max-width: 850px) {
+        .slider-container {
+            margin: 20px;
+        }
+        
+        .slider, .slide img {
+            height: auto;
+            min-height: 300px;
+            max-height: 60vh;
+        }
+    }
+    .icon24 {
+        width:24px !important;
+        height: 24px !important;
+    }
+    .icon32 {
+        width:32px !important;
+        height: 32px !important;
+    }
+
+    .whatsappicon {
+        display: inline-block;
+        width: 31.76px;
+        height: 32px;
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 258'%3E%3Cdefs%3E%3ClinearGradient id='logosWhatsappIcon0' x1='50%25' x2='50%25' y1='100%25' y2='0%25'%3E%3Cstop offset='0%25' stop-color='%231faf38'/%3E%3Cstop offset='100%25' stop-color='%2360d669'/%3E%3C/linearGradient%3E%3ClinearGradient id='logosWhatsappIcon1' x1='50%25' x2='50%25' y1='100%25' y2='0%25'%3E%3Cstop offset='0%25' stop-color='%23f9f9f9'/%3E%3Cstop offset='100%25' stop-color='%23fff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath fill='url(%23logosWhatsappIcon0)' d='M5.463 127.456c-.006 21.677 5.658 42.843 16.428 61.499L4.433 252.697l65.232-17.104a123 123 0 0 0 58.8 14.97h.054c67.815 0 123.018-55.183 123.047-123.01c.013-32.867-12.775-63.773-36.009-87.025c-23.23-23.25-54.125-36.061-87.043-36.076c-67.823 0-123.022 55.18-123.05 123.004'/%3E%3Cpath fill='url(%23logosWhatsappIcon1)' d='M1.07 127.416c-.007 22.457 5.86 44.38 17.014 63.704L0 257.147l67.571-17.717c18.618 10.151 39.58 15.503 60.91 15.511h.055c70.248 0 127.434-57.168 127.464-127.423c.012-34.048-13.236-66.065-37.3-90.15C194.633 13.286 162.633.014 128.536 0C58.276 0 1.099 57.16 1.071 127.416m40.24 60.376l-2.523-4.005c-10.606-16.864-16.204-36.352-16.196-56.363C22.614 69.029 70.138 21.52 128.576 21.52c28.3.012 54.896 11.044 74.9 31.06c20.003 20.018 31.01 46.628 31.003 74.93c-.026 58.395-47.551 105.91-105.943 105.91h-.042c-19.013-.01-37.66-5.116-53.922-14.765l-3.87-2.295l-40.098 10.513z'/%3E%3Cpath fill='%23fff' d='M96.678 74.148c-2.386-5.303-4.897-5.41-7.166-5.503c-1.858-.08-3.982-.074-6.104-.074c-2.124 0-5.575.799-8.492 3.984c-2.92 3.188-11.148 10.892-11.148 26.561s11.413 30.813 13.004 32.94c1.593 2.123 22.033 35.307 54.405 48.073c26.904 10.609 32.379 8.499 38.218 7.967c5.84-.53 18.844-7.702 21.497-15.139c2.655-7.436 2.655-13.81 1.859-15.142c-.796-1.327-2.92-2.124-6.105-3.716s-18.844-9.298-21.763-10.361c-2.92-1.062-5.043-1.592-7.167 1.597c-2.124 3.184-8.223 10.356-10.082 12.48c-1.857 2.129-3.716 2.394-6.9.801c-3.187-1.598-13.444-4.957-25.613-15.806c-9.468-8.442-15.86-18.867-17.718-22.056c-1.858-3.184-.199-4.91 1.398-6.497c1.431-1.427 3.186-3.719 4.78-5.578c1.588-1.86 2.118-3.187 3.18-5.311c1.063-2.126.531-3.986-.264-5.579c-.798-1.593-6.987-17.343-9.819-23.64' stroke-width='2.5' stroke='%23fff'/%3E%3C/svg%3E");
+    }
+    .shareicon {
+        display: inline-block;
+        width: 32px;
+        height: 32px;
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%2300c7ff' d='M18 9a3 3 0 1 0-2.977-2.63l-6.94 3.47a3 3 0 1 0 0 4.319l6.94 3.47a3 3 0 1 0 .895-1.789l-6.94-3.47a3 3 0 0 0 0-.74l6.94-3.47C16.456 8.68 17.19 9 18 9' stroke-width='0.2' stroke='%2300c7ff'/%3E%3C/svg%3E");
+    }
+
+    .facebookicon {
+        display: inline-block;
+        width: 32px;
+        height: 32px;
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Crect width='118.35' height='118.35' x='4.83' y='4.83' fill='%233d5a98' rx='6.53' ry='6.53' stroke-width='3' stroke='%233d5a98'/%3E%3Cpath fill='%23fff' d='M86.48 123.17V77.34h15.38l2.3-17.86H86.48v-11.4c0-5.17 1.44-8.7 8.85-8.7h9.46v-16A127 127 0 0 0 91 22.7c-13.62 0-23 8.3-23 23.61v13.17H52.62v17.86H68v45.83z' stroke-width='3' stroke='%23fff'/%3E%3C/svg%3E");
+    } 
+    
+    .instagramicon {
+        display: inline-block;
+        width: 32px;
+        height: 32px;
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cg fill='none'%3E%3Crect width='256' height='256' fill='url(%23skillIconsInstagram0)' rx='60'/%3E%3Crect width='256' height='256' fill='url(%23skillIconsInstagram1)' rx='60'/%3E%3Cpath fill='%23fff' d='M128.009 28c-27.158 0-30.567.119-41.233.604c-10.646.488-17.913 2.173-24.271 4.646c-6.578 2.554-12.157 5.971-17.715 11.531c-5.563 5.559-8.98 11.138-11.542 17.713c-2.48 6.36-4.167 13.63-4.646 24.271c-.477 10.667-.602 14.077-.602 41.236s.12 30.557.604 41.223c.49 10.646 2.175 17.913 4.646 24.271c2.556 6.578 5.973 12.157 11.533 17.715c5.557 5.563 11.136 8.988 17.709 11.542c6.363 2.473 13.631 4.158 24.275 4.646c10.667.485 14.073.604 41.23.604c27.161 0 30.559-.119 41.225-.604c10.646-.488 17.921-2.173 24.284-4.646c6.575-2.554 12.146-5.979 17.702-11.542c5.563-5.558 8.979-11.137 11.542-17.712c2.458-6.361 4.146-13.63 4.646-24.272c.479-10.666.604-14.066.604-41.225s-.125-30.567-.604-41.234c-.5-10.646-2.188-17.912-4.646-24.27c-2.563-6.578-5.979-12.157-11.542-17.716c-5.562-5.562-11.125-8.979-17.708-11.53c-6.375-2.474-13.646-4.16-24.292-4.647c-10.667-.485-14.063-.604-41.23-.604zm-8.971 18.021c2.663-.004 5.634 0 8.971 0c26.701 0 29.865.096 40.409.575c9.75.446 15.042 2.075 18.567 3.444c4.667 1.812 7.994 3.979 11.492 7.48c3.5 3.5 5.666 6.833 7.483 11.5c1.369 3.52 3 8.812 3.444 18.562c.479 10.542.583 13.708.583 40.396s-.104 29.855-.583 40.396c-.446 9.75-2.075 15.042-3.444 18.563c-1.812 4.667-3.983 7.99-7.483 11.488c-3.5 3.5-6.823 5.666-11.492 7.479c-3.521 1.375-8.817 3-18.567 3.446c-10.542.479-13.708.583-40.409.583c-26.702 0-29.867-.104-40.408-.583c-9.75-.45-15.042-2.079-18.57-3.448c-4.666-1.813-8-3.979-11.5-7.479s-5.666-6.825-7.483-11.494c-1.369-3.521-3-8.813-3.444-18.563c-.479-10.542-.575-13.708-.575-40.413s.096-29.854.575-40.396c.446-9.75 2.075-15.042 3.444-18.567c1.813-4.667 3.983-8 7.484-11.5s6.833-5.667 11.5-7.483c3.525-1.375 8.819-3 18.569-3.448c9.225-.417 12.8-.542 31.437-.563zm62.351 16.604c-6.625 0-12 5.37-12 11.996c0 6.625 5.375 12 12 12s12-5.375 12-12s-5.375-12-12-12zm-53.38 14.021c-28.36 0-51.354 22.994-51.354 51.355s22.994 51.344 51.354 51.344c28.361 0 51.347-22.983 51.347-51.344c0-28.36-22.988-51.355-51.349-51.355zm0 18.021c18.409 0 33.334 14.923 33.334 33.334c0 18.409-14.925 33.334-33.334 33.334s-33.333-14.925-33.333-33.334c0-18.411 14.923-33.334 33.333-33.334' stroke-width='2.5' stroke='%23fff'/%3E%3Cdefs%3E%3CradialGradient id='skillIconsInstagram0' cx='0' cy='0' r='1' gradientTransform='matrix(0 -253.715 235.975 0 68 275.717)' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23fd5'/%3E%3Cstop offset='.1' stop-color='%23fd5'/%3E%3Cstop offset='.5' stop-color='%23ff543e'/%3E%3Cstop offset='1' stop-color='%23c837ab'/%3E%3C/radialGradient%3E%3CradialGradient id='skillIconsInstagram1' cx='0' cy='0' r='1' gradientTransform='matrix(22.25952 111.2061 -458.39518 91.75449 -42.881 18.441)' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%233771c8'/%3E%3Cstop offset='.128' stop-color='%233771c8'/%3E%3Cstop offset='1' stop-color='%2360f' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3C/g%3E%3C/svg%3E");
+    }
+    .menuicon {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%2300c7ff' d='M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z' stroke-width='0.2' stroke='%2300c7ff'/%3E%3C/svg%3E");
+}
+
+.menucloseicon {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%2300c7ff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 5L12 5L19 5M5 12H19M5 19L12 19L19 19'%3E%3Canimate fill='freeze' attributeName='d' dur='0.4s' values='M5 5L12 5L19 5M5 12H19M5 19L12 19L19 19;M5 5L12 12L19 5M12 12H12M5 19L12 12L19 19'/%3E%3C/path%3E%3C/svg%3E");
+}
+
+.lefticon {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%2300c7ff' d='m14 18l-6-6l6-6l1.4 1.4l-4.6 4.6l4.6 4.6z' stroke-width='0.2' stroke='%2300c7ff'/%3E%3C/svg%3E");
+}
+
+.righticon {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%2300c7ff' d='M12.6 12L8 7.4L9.4 6l6 6l-6 6L8 16.6z' stroke-width='0.2' stroke='%2300c7ff'/%3E%3C/svg%3E");
+}
+
+.geoicon {
+  display: inline-block;
+  width: 22.33px;
+  height: 32px;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%2300c7ff' d='M19.527 4.799c1.212 2.608.937 5.678-.405 8.173c-1.101 2.047-2.744 3.74-4.098 5.614c-.619.858-1.244 1.75-1.669 2.727c-.141.325-.263.658-.383.992c-.121.333-.224.673-.34 1.008c-.109.314-.236.684-.627.687h-.007c-.466-.001-.579-.53-.695-.887c-.284-.874-.581-1.713-1.019-2.525c-.51-.944-1.145-1.817-1.79-2.671zM8.545 7.705l-3.959 4.707c.724 1.54 1.821 2.863 2.871 4.18q.371.465.737.936l4.984-5.925l-.029.01c-1.741.601-3.691-.291-4.392-1.987a3.4 3.4 0 0 1-.209-.716c-.063-.437-.077-.761-.004-1.198zM5.492 3.149l-.003.004c-1.947 2.466-2.281 5.88-1.117 8.77l4.785-5.689l-.058-.05zM14.661.436l-3.838 4.563l.027-.01c1.6-.551 3.403.15 4.22 1.626c.176.319.323.683.377 1.045c.068.446.085.773.012 1.22l-.003.016l3.836-4.561A8.38 8.38 0 0 0 14.67.439zM9.466 5.868L14.162.285l-.047-.012A8.3 8.3 0 0 0 11.986 0a8.44 8.44 0 0 0-6.169 2.766l-.016.018z' stroke-width='0.2' stroke='%2300c7ff'/%3E%3C/svg%3E");
+}
+
+.caricon {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%2300c7ff' fill-rule='evenodd' d='M128 298.666c23.564 0 42.667 19.103 42.667 42.667S151.564 384 128 384s-42.666-19.103-42.666-42.667s19.102-42.667 42.666-42.667m245.334 0c23.564 0 42.666 19.103 42.666 42.667S396.898 384 373.334 384s-42.667-19.103-42.667-42.667s19.103-42.667 42.667-42.667m-88.89-149.333l5.69 4.267l81.856 61.397l65.025 16.266c17.877 4.47 30.731 19.85 32.182 37.966l.137 3.427v74.667l-16.16 4.04l-17.466 4.367a64.2 64.2 0 0 0 1.626-14.397c0-35.346-28.654-64-64-64s-64 28.654-64 64c0 7.48 1.283 14.661 3.642 21.334H188.358A63.9 63.9 0 0 0 192 341.333c0-35.346-28.653-64-64-64c-35.346 0-64 28.654-64 64c0 3.244.242 6.431.707 9.545l-22.04-22.042V226.943l4.945-5.934l53.333-64l6.397-7.676zM270.23 192H127.318l-35.55 42.666h206.899l12.192-12.192z'/%3E%3C/svg%3E");
+}
+
+.usersicon {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%2300c7ff' d='M21.053 20.8c-1.132-.453-1.584-1.698-1.584-1.698s-.51.282-.51-.51s.51.51 1.02-2.548c0 0 1.413-.397 1.13-3.68h-.34s.85-3.51 0-4.7c-.85-1.188-1.188-1.98-3.057-2.547s-1.188-.454-2.547-.396s-2.492.793-2.492 1.19c0 0-.85.056-1.188.396c-.34.34-.906 1.924-.906 2.32s.283 3.06.566 3.625l-.337.114c-.284 3.283 1.13 3.68 1.13 3.68c.51 3.058 1.02 1.756 1.02 2.548s-.51.51-.51.51s-.452 1.245-1.584 1.698s-7.416 2.886-7.927 3.396c-.512.51-.454 2.888-.454 2.888H29.43s.06-2.377-.452-2.888c-.51-.51-6.795-2.944-7.927-3.396zm-12.47-.172c-.1-.18-.148-.31-.148-.31s-.432.24-.432-.432s.432.432.864-2.16c0 0 1.2-.335.96-3.118h-.29s.144-.59.238-1.334a10 10 0 0 1 .037-.996l.038-.426c-.02-.492-.107-.94-.312-1.226c-.72-1.007-1.008-1.68-2.59-2.16c-1.584-.48-1.01-.384-2.16-.335c-1.152.05-2.112.672-2.112 1.01c0 0-.72.047-1.008.335c-.27.27-.705 1.462-.757 1.885v.28c.048.654.26 2.45.47 2.873l-.286.096c-.24 2.782.96 3.118.96 3.118c.43 2.59.863 1.488.863 2.16s-.432.43-.432.43s-.383 1.058-1.343 1.44l-.232.092v5.234h.575c-.03-1.278.077-2.927.746-3.594c.357-.355 1.524-.94 6.353-2.862zm22.33-9.056c-.04-.378-.127-.715-.292-.946c-.718-1.008-1.007-1.68-2.59-2.16s-1.007-.384-2.16-.335c-1.15.05-2.11.672-2.11 1.01c0 0-.72.047-1.008.335c-.27.272-.71 1.472-.758 1.89h.033l.08.914c.02.23.022.435.027.644c.09.666.21 1.35.33 1.59l-.286.095c-.24 2.782.96 3.118.96 3.118c.432 2.59.863 1.488.863 2.16s-.43.43-.43.43s-.054.143-.164.34c4.77 1.9 5.927 2.48 6.28 2.833c.67.668.774 2.316.745 3.595h.48V21.78l-.05-.022c-.96-.383-1.344-1.44-1.344-1.44s-.433.24-.433-.43s.433.43.864-2.16c0 0 .804-.23.963-1.84V14.66q0-.026-.003-.05h-.29s.216-.89.293-1.862z'/%3E%3C/svg%3E");
+}
+
+.mapicon {
+  display: inline-block;
+  width: 41px;
+  height: 32px;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 41 32'%3E%3Cg fill='%2300c7ff' stroke-width='1' stroke='%23006ff4'%3E%3Cpath d='M9.239 31.927c.009.006.021.003.03.009A.5.5 0 0 0 9.5 32a.5.5 0 0 0 .132-.018L20.5 29.016l10.868 2.966A.5.5 0 0 0 31.5 32a.5.5 0 0 0 .23-.065c.01-.005.021-.003.03-.009l9-5.5a.5.5 0 0 0 .22-.563l-4.984-17.5a.5.5 0 0 0-.726-.3l-4.962 2.784a.501.501 0 0 0 .491.872l4.409-2.475l4.707 16.526l-8.015 4.899l-1.904-15.231a.5.5 0 0 0-.993.124l1.907 15.259L21 28.116v-2.73a.5.5 0 0 0-1 0v2.73l-9.911 2.705l1.907-15.259a.5.5 0 1 0-.993-.124L9.1 30.669l-8.015-4.898L5.792 9.246l4.409 2.475a.501.501 0 0 0 .491-.872L5.729 8.064a.496.496 0 0 0-.725.3L.02 25.864a.5.5 0 0 0 .22.563z'/%3E%3Cpath d='M20.161 23.368a.5.5 0 0 0 .675.003C21.169 23.068 29 15.882 29 8.5C29 3.733 25.267 0 20.5 0S12 3.733 12 8.5c0 7.254 7.828 14.56 8.161 14.868M20.5 1C24.775 1 28 4.224 28 8.5c0 6.097-5.993 12.337-7.497 13.807C19.002 20.82 13 14.498 13 8.5C13 4.224 16.225 1 20.5 1'/%3E%3Cpath d='M25 8.5C25 6.019 22.981 4 20.5 4S16 6.019 16 8.5s2.019 4.5 4.5 4.5S25 10.981 25 8.5M20.5 12c-1.93 0-3.5-1.57-3.5-3.5S18.57 5 20.5 5S24 6.57 24 8.5S22.43 12 20.5 12'/%3E%3C/g%3E%3C/svg%3E");
+}
+    </style>
+
+</head>
+<body class="bg-gray-100 font-inter">
+    <a href="https://wa.me/3815556485" target="_blank" class="whatsapp-button">
+        <i class="whatsappicon"></i>
+    </a>
+
+    <div class="share-button" id="share-button">
+        <i class="shareicon"></i>
+    </div>
+
+    <header class="bg-blue-500 text-white fixed w-full top-0 z-50 shadow-md">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="#" class="flex items-center text-xl font-semibold" style="color: greenyellow;">
+                <img src="/assets/imgs/logo.png" alt="." class="mr-3" style="width: 100px; height: auto;">
+                Tucuman Tours
+            </a>
+            <nav class="hidden md:block">
+                <a href="#inicio" class="menu-link active">Inicio</a>
+                <a href="#nosotros" class="menu-link">Nosotros</a>
+                <a href="#servicios" class="menu-link">Servicios</a>
+                <a href="#galeria" class="menu-link">Galería</a>
+                <a href="#contacto" class="menu-link">Contacto</a>
+            </nav>
+            <button id="hamburger-btn" class="md:hidden text-white focus:outline-none" aria-label="Menú Móvil">
+                <i class="menuicon icon32"></i>
+            </button>
+        </div>
+    </header>
+
+    <div id="mobile-menu" class="hidden fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-90 z-50">
+        <div class="bg-gray-800 w-80 h-full absolute right-0 p-6">
+            <div class="flex justify-end mb-4">
+                <button id="close-menu-btn" class="text-white focus:outline-none" aria-label="Cerrar Menú">
+                    <i class="menucloseicon icon32"></i>
+                </button>
+            </div>
+            <nav class="block">
+                <a href="#inicio" class="block text-lg text-white py-2 menu-link">Inicio</a>
+                <a href="#nosotros" class="block text-lg text-white py-2 menu-link">Nosotros</a>
+                <a href="#servicios" class="block text-lg text-white py-2 menu-link">Servicios</a>
+                <a href="#galeria" class="block text-lg text-white py-2 menu-link">Galería</a>
+                <a href="#contacto" class="block text-lg text-white py-2 menu-link">Contacto</a>
+            </nav>
+        </div>
+    </div>
+
+    <section id="inicio" class="bg-cover bg-center h-screen flex items-center justify-center" style="background-image: url('/assets/imgs/inicio.jpg');">
+        <div class="text-center text-back">
+            <h1 class="text-4xl md:text-6xl font-semibold mb-4">Descubre Experiencias Inolvidables</h1>
+            <p class="text-lg md:text-xl mb-8">Tu puerta de entrada a los mejores tours.</p>
+            <a href="#contacto" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full transition duration-300">
+                ¡Reserva tu aventura!
+            </a>
+        </div>
+    </section>
+
+    <section id="nosotros" class="container mx-auto py-16 px-4">
+        <h2 class="text-3xl font-semibold text-gray-800 text-center mb-8">Acerca de Nosotros</h2>
+        <div class="grid md:grid-cols-2 gap-8 items-center">
+            <div>
+                <img src="https://placehold.co/600x400/EEE/31343C" alt="Acerca de Nosotros" class="rounded-lg shadow-lg">
+            </div>
+            <div>
+                <p class="text-gray-700 text-lg">
+                    Somos una empresa apasionada por mostrarte los rincones más hermosos de nuestro país.
+                    Con años de experiencia en la industria del turismo, nos dedicamos a crear experiencias
+                    únicas y memorables para cada uno de nuestros viajeros.
+                </p>
+                <p class="text-gray-700 text-lg mt-4">
+                    Nuestro equipo está formado por expertos en viajes, guías locales y profesionales
+                    comprometidos con brindarte el mejor servicio. Nos encargamos de cada detalle para que
+                    tú solo te preocupes por disfrutar.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="servicios" class="bg-gray-200 py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-semibold text-gray-800 text-center mb-8">Nuestros Servicios</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white rounded-lg shadow-md p-6 flex flex-col justify-between">
+                    <h3 class="text-xl font-semibold text-blue-600 mb-4">Tours Personalizados</h3>
+                    <p class="text-gray-700 mb-4">
+                        Diseñamos el viaje de tus sueños, adaptado a tus intereses y preferencias.
+                    </p>
+                    <i class="mapicon icon32 align-self-end"></i>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-6 flex flex-col justify-between">
+                    <h3 class="text-xl font-semibold text-blue-600 mb-4">Guías Expertos</h3>
+                    <p class="text-gray-700 mb-4">
+                        Guías locales con amplio conocimiento te acompañarán en cada aventura.
+                    </p>
+                    <i class="usersicon icon32 align-self-end"></i>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-6 flex flex-col justify-between">
+                    <h3 class="text-xl font-semibold text-blue-600 mb-4">Transporte de Lujo</h3>
+                    <p class="text-gray-700 mb-4">
+                        Viaja con comodidad y estilo en nuestros vehículos de última generación.
+                    </p>
+                    <i class="caricon icon32 align-self-end"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="galeria" class="py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-semibold text-gray-800 text-center mb-8">Galería de Fotos</h2>
+            <div class="slider-container">
+                <div class="slider">
+                    <!-- Slide 1 -->
+                    <div class="slide">
+                        <img src="/assets/imgs/pic1.png" alt="Imagen 1">
+                        <div class="street-view-btn" data-lat="40.712776" data-lng="-74.005974">
+                            <i class="geoicon icon32"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Slide 2 -->
+                    <div class="slide">
+                        <img src="/assets/imgs/pic2.jpg" alt="Imagen 2">
+                        <div class="street-view-btn" data-lat="34.052235" data-lng="-118.243683">
+                            <i class="geoicon icon32"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Slide 3 -->
+                    <div class="slide">
+                        <img src="/assets/imgs/pic3.jpg" alt="Imagen 3">
+                        <div class="street-view-btn" data-lat="41.878113" data-lng="-87.629799">
+                            <i class="geoicon icon32"></i>
+                        </div>
+                    </div>
+
+                    <!-- Slide 4 -->
+                    <div class="slide">
+                        <img src="/assets/imgs/pic4.webp" alt="Imagen 3">
+                        <div class="street-view-btn" data-lat="41.878113" data-lng="-87.629799">
+                            <i class="geoicon icon32"></i>
+                        </div>
+                    </div>
+
+                    <!-- Slide 5 -->
+                    <div class="slide">
+                        <img src="/assets/imgs/pic5.webp" alt="Imagen 3">
+                        <div class="street-view-btn" data-lat="41.878113" data-lng="-87.629799">
+                            <i class="geoicon icon32"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Controles -->
+                <div class="slider-controls">
+                    <button class="control-btn prev-btn"><i class="lefticon icon32"></i></button>
+                    <button class="control-btn next-btn"><i class="righticon icon32"></i></button>
+                </div>
+                
+                <!-- Puntos indicadores -->
+                <div class="slider-dots">
+                    <div class="dot active"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contacto" class="bg-blue-100 py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-semibold text-gray-800 text-center mb-8">Contacto</h2>
+            <div class="bg-white rounded-lg shadow-md p-8 md:p-12">
+                <p class="text-gray-700 text-lg text-center mb-6">
+                    ¿Listo para comenzar tu aventura? ¡Contáctanos y te ayudaremos a planificar el viaje perfecto!
+                </p>
+                <form class="space-y-4">
+                    <div>
+                        <label for="nombre" class="block text-gray-700 text-sm font-bold mb-2">Nombre:</label>
+                        <input type="text" id="nombre" class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Tu nombre">
+                    </div>
+                    <div>
+                        <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
+                        <input type="email" id="email" class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Tu email">
+                    </div>
+                    <div>
+                        <label for="mensaje" class="block text-gray-700 text-sm font-bold mb-2">Mensaje:</label>
+                        <textarea id="mensaje" class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-32 resize-y" placeholder="Tu mensaje"></textarea>
+                    </div>
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full transition duration-300 w-full">
+                        Enviar mensaje
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-gray-800 text-white py-6">
+        <div class="container mx-auto px-4 text-center">
+            <p>© 2023 Nombre de la Empresa. Todos los derechos reservados.</p>
+            <p>
+                <a href="https://www.facebook.com/" target="_blank" class="text-blue-400 hover:text-blue-300 mr-3">
+                    <i class="facebookicon icon24"></i>
+                </a>
+                <a href="https://www.instagram.com/" target="_blank" class="text-pink-400 hover:text-pink-300 mr-3">
+                    <i class="instagramicon icon24"></i>
+                </a>
+                 <a href="https://wa.me/tunumerodetelefono" target="_blank" class="text-green-400 hover:text-green-300">
+                    <i class="whatsappicon icon24"></i>
+                </a>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+ 
+        document.addEventListener('DOMContentLoaded', function() {
+            const slider = document.querySelector('.slider');
+            const slides = document.querySelectorAll('.slide');
+            const prevBtn = document.querySelector('.prev-btn');
+            const nextBtn = document.querySelector('.next-btn');
+            const dots = document.querySelectorAll('.dot');
+            const streetViewBtns = document.querySelectorAll('.street-view-btn');
+            
+            let currentSlide = 0;
+            let slideInterval;
+            const slideTime = 5000; // 5 segundos
+            
+            // Inicializar slider
+            function initSlider() {
+                updateSlider();
+                startSlideTimer();
+            }
+            
+            // Mover al slide específico
+            function goToSlide(n) {
+                currentSlide = (n + slides.length) % slides.length;
+                updateSlider();
+                resetSlideTimer();
+            }
+            
+            // Actualizar la posición del slider
+            function updateSlider() {
+                slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+                
+                // Actualizar puntos activos
+                dots.forEach((dot, index) => {
+                    dot.classList.toggle('active', index === currentSlide);
+                });
+            }
+            
+            // Siguiente slide
+            function nextSlide() {
+                goToSlide(currentSlide + 1);
+            }
+            
+            // Slide anterior
+            function prevSlide() {
+                goToSlide(currentSlide - 1);
+            }
+            
+            // Iniciar temporizador para cambio automático
+            function startSlideTimer() {
+                slideInterval = setInterval(nextSlide, slideTime);
+            }
+            
+            // Reiniciar temporizador
+            function resetSlideTimer() {
+                clearInterval(slideInterval);
+                startSlideTimer();
+            }
+            
+            // Event listeners
+            nextBtn.addEventListener('click', function() {
+                nextSlide();
+            });
+            
+            prevBtn.addEventListener('click', function() {
+                prevSlide();
+            });
+            
+            // Click en puntos indicadores
+            dots.forEach((dot, index) => {
+                dot.addEventListener('click', () => {
+                    goToSlide(index);
+                });
+            });
+            
+            // Abrir Street View
+            streetViewBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const lat = this.getAttribute('data-lat');
+                    const lng = this.getAttribute('data-lng');
+                    const streetViewUrl = `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${lat},${lng}`;
+                    window.open(streetViewUrl, '_blank');
+                });
+            });
+            
+            // Pausar slider al pasar el ratón
+            slider.addEventListener('mouseenter', () => {
+                clearInterval(slideInterval);
+            });
+            
+            // Reanudar slider al quitar el ratón
+            slider.addEventListener('mouseleave', () => {
+                startSlideTimer();
+            });
+            
+            // Iniciar slider
+            initSlider();
+            
+            // Hacer el slider responsivo
+            window.addEventListener('resize', function() {
+                slider.style.transition = 'none';
+                updateSlider();
+                setTimeout(() => {
+                    slider.style.transition = 'transform 0.5s ease-in-out';
+                }, 10);
+            });
+        });
+
+        // Función para compartir en redes sociales
+        document.getElementById('share-button').addEventListener('click', function() {
+            const url = window.location.href;
+            const title = document.title;
+            const text = "¡Mira este increíble sitio de tours!"; // Texto para compartir
+
+            if (navigator.share) {
+                navigator.share({
+                    title: title,
+                    text: text,
+                    url: url,
+                })
+                .then(() => console.log('Shared successfully'))
+                .catch((error) => console.log('Error sharing', error));
+            } else {
+                // Fallback para navegadores que no soportan la API de Share
+                const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&t=${encodeURIComponent(title)}`;
+                const twitterUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
+                const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text + " " + url)}`;
+
+
+                // Abrir las opciones de compartir en un menú o mostrar enlaces directos
+                if (confirm("¿Cómo quieres compartir?")) {
+                    // Opción 1: Mostrar enlaces directos
+                    const facebookShare = window.open(shareUrl, '_blank');
+                    const twitterShare = window.open(twitterUrl, '_blank');
+                    const whatsappShare = window.open(whatsappUrl, '_blank');
+                }
+            }
+        });
+
+        // Función para abrir Google Street View
+        document.querySelectorAll('.view-street-view').forEach(button => {
+            button.addEventListener('click', function() {
+                const location = this.dataset.location; // Obtener la ubicación desde el atributo data-location
+                if (location) {
+                    const streetViewUrl = `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${location}`;
+                    window.open(streetViewUrl, '_blank');
+                } else {
+                    alert('Ubicación no disponible.');
+                }
+            });
+        });
+
+        // Smooth scrolling para los enlaces del menú
+        document.querySelectorAll('.menu-link').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                document.querySelectorAll('.menu-link').forEach(link => {
+                    link.classList.remove('active');
+                });
+                this.classList.add('active');
+
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - document.querySelector('header').offsetHeight,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+       // Función para resaltar la sección activa en el menú
+        function updateActiveMenu() {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.menu-link');
+            let currentSectionId = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.scrollY >= sectionTop - document.querySelector('header').offsetHeight - 50 &&
+                    window.scrollY < sectionTop + sectionHeight - document.querySelector('header').offsetHeight - 50) {
+                    currentSectionId = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').slice(1) === currentSectionId) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', updateActiveMenu);
+
+        // Menú móvil
+        const hamburgerBtn = document.getElementById('hamburger-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const closeMenuBtn = document.getElementById('close-menu-btn');
+        const mobileMenuLinks = mobileMenu.querySelectorAll('.menu-link');
+
+        hamburgerBtn.addEventListener('click', () => {
+            console.log(mobileMenu);
+            mobileMenu.classList.remove("hidden");
+            document.body.classList.add('overflow-hidden');
+        });
+
+        closeMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+        });
+
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                document.body.classList.remove('overflow-hidden');
+            });
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!mobileMenu.classList.contains('hidden') && !mobileMenu.contains(event.target) && event.target !== hamburgerBtn) {
+                /*mobileMenu.classList.add('hidden');*/
+                document.body.classList.remove('overflow-hidden');
+            }
+        });
+    </script>
+</body>
+</html>
